@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "fincoinnew",
+    "slug": "fincoinnew",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "fincoinnew"
+}
