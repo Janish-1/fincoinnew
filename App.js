@@ -1,9 +1,17 @@
-import React, { useRef } from 'react';
-import { View, Image, StyleSheet, SafeAreaView, TouchableOpacity, Text } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+  Home as HomeIcon,
+  Payment as PaymentIcon,
+  AccountBalanceWallet as AccountIcon,
+  Person as ProfileIcon,
+} from '@mui/icons-material';
 import WebView from 'react-native-webview';
 
-export default function App() {
+const HomeScreen = () => {
   const webViewRef = useRef(null);
+
+  const [showNavBar, setShowNavBar] = useState(true);
 
   const goToUrl = (url) => {
     if (webViewRef.current) {
@@ -12,42 +20,59 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.webViewContainer}>
-        <WebView
-          ref={webViewRef}
-          source={{ uri: 'https://fincoin.swastikcredit.in/' }} // Replace with the initial URL of your website
-          style={styles.webview}
-        />
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <WebView
+        ref={webViewRef}
+        source={{ uri: 'https://fincoin.swastikcredit.in/' }}
+        style={styles.webview}
+      />
+      {showNavBar && (
+        <View style={styles.bottomNavContainer}>
+          <TouchableOpacity style={styles.navItem} onPress={() => goToUrl('/home')}>
+            <HomeIcon style={{ fontSize: 24, color: 'tomato' }} />
+            <Text style={styles.navText}>Home</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navItem} onPress={() => goToUrl('/payment')}>
+            <PaymentIcon style={{ fontSize: 24, color: 'tomato' }} />
+            <Text style={styles.navText}>Payment</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navItem} onPress={() => goToUrl('/account')}>
+            <AccountIcon style={{ fontSize: 24, color: 'tomato' }} />
+            <Text style={styles.navText}>Account</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navItem} onPress={() => goToUrl('/profile')}>
+            <ProfileIcon style={{ fontSize: 24, color: 'tomato' }} />
+            <Text style={styles.navText}>Profile</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  webViewContainer: {
-    flex: 1,
-  },
   webview: {
     flex: 1,
   },
-  bottomBar: {
+  bottomNavContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#000000',
+    backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#ddd',
     paddingVertical: 10,
   },
-  bottomBarItem: {
-    fontSize: 12,
-    color: '#FFFDFD',
+  navItem: {
+    alignItems: 'center',
+  },
+  navText: {
     marginTop: 3,
-    textAlign: 'center',
   },
 });
+
+export default HomeScreen;
