@@ -6,9 +6,8 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons"; // Replace with the desired icon library
 import WebView from "react-native-webview";
-Icon.loadFont();
+import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
   const webViewRef = useRef(null);
@@ -37,28 +36,41 @@ const HomeScreen = () => {
           source={{ uri: "https://fincoin.swastikcredit.in/" }}
           style={styles.webview}
           onNavigationStateChange={onNavigationStateChange}
-          javaScriptEnabled={true}
-          domStorageEnabled={true}
+          onError={(error) => console.error("WebView error:", error)}
         />
         {showNavBar && (
           <View style={styles.bottomNavContainer}>
-            <TouchableOpacity onPress={() => goToUrl("https://fincoin.swastikcredit.in/home")}>
-              <Icon name="home-outline" size={25} />
+            <TouchableOpacity
+              onPress={() => goToUrl("https://fincoin.swastikcredit.in/home")}
+            >
+              <Ionicons  name="home-outline" size={25} />
               <Text style={styles.navText}>Home</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => goToUrl("https://fincoin.swastikcredit.in/payment")}>
-              <Icon name="card-outline" size={24} />
+            <TouchableOpacity
+              onPress={() =>
+                goToUrl("https://fincoin.swastikcredit.in/payment")
+              }
+            >
+              <Ionicons  name="card-outline" size={24} />
               <Text style={styles.navText}>Payment</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => goToUrl("https://fincoin.swastikcredit.in/account")}>
-              <Icon name="wallet-outline" size={24} />
+            <TouchableOpacity
+              onPress={() =>
+                goToUrl("https://fincoin.swastikcredit.in/account")
+              }
+            >
+              <Ionicons  name="wallet-outline" size={24} />
               <Text style={styles.navText}>Account</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => goToUrl("https://fincoin.swastikcredit.in/profile")}>
-              <Icon name="person-outline" size={24} />
+            <TouchableOpacity
+              onPress={() =>
+                goToUrl("https://fincoin.swastikcredit.in/profile")
+              }
+            >
+              <Ionicons  name="person-outline" size={24} />
               <Text style={styles.navText}>Profile</Text>
             </TouchableOpacity>
           </View>
