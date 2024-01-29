@@ -41,9 +41,9 @@ const HomeScreen = () => {
         {showNavBar && (
           <View style={styles.bottomNavContainer}>
             <TouchableOpacity
-              onPress={() => goToUrl("https://fincoin.swastikcredit.in/home")}
+              onPress={() => goToUrl("https://fincoin.swastikcredit.in/")}
             >
-              <Ionicons  name="home-outline" size={25} />
+              <Ionicons  name="home-outline" size={25} style={[styles.whiteIcon, { textAlign: 'center' }]} />
               <Text style={styles.navText}>Home</Text>
             </TouchableOpacity>
 
@@ -52,7 +52,7 @@ const HomeScreen = () => {
                 goToUrl("https://fincoin.swastikcredit.in/payment")
               }
             >
-              <Ionicons  name="card-outline" size={24} />
+              <Ionicons  name="card-outline" size={24} style={[styles.whiteIcon, { textAlign: 'center' }]} />
               <Text style={styles.navText}>Payment</Text>
             </TouchableOpacity>
 
@@ -61,7 +61,7 @@ const HomeScreen = () => {
                 goToUrl("https://fincoin.swastikcredit.in/account")
               }
             >
-              <Ionicons  name="wallet-outline" size={24} />
+              <Ionicons  name="wallet-outline" size={24} style={[styles.whiteIcon, { textAlign: 'center' }]} />
               <Text style={styles.navText}>Account</Text>
             </TouchableOpacity>
 
@@ -70,7 +70,7 @@ const HomeScreen = () => {
                 goToUrl("https://fincoin.swastikcredit.in/profile")
               }
             >
-              <Ionicons  name="person-outline" size={24} />
+              <Ionicons  name="person-outline" size={24} style={[styles.whiteIcon, { textAlign: 'center' }]} />
               <Text style={styles.navText}>Profile</Text>
             </TouchableOpacity>
           </View>
@@ -92,17 +92,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#5a5966',
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    backgroundColor: 'black',
     paddingVertical: 10,
   },
   navItem: {
     alignItems: "center",
   },
+  
   navText: {
+    color: 'white',  // Set text color to white
     marginTop: 3,
   },
-});
+  
+  // Assuming you have a style for white icons
+  whiteIcon: {
+    color: 'white',  // Set icon color to white
+  },
+  });
 
 export default HomeScreen;
