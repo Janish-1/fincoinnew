@@ -1,10 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  BackHandler,
 } from "react-native";
 import WebView from "react-native-webview";
 import { Ionicons } from '@expo/vector-icons';
@@ -12,6 +13,24 @@ import { Ionicons } from '@expo/vector-icons';
 const HomeScreen = () => {
   const webViewRef = useRef(null);
   const [showNavBar, setShowNavBar] = useState(true);
+  const [selectedTab, setSelectedTab] = useState('home');
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  const handleBackPress = () => {
+    if (webViewRef.current) {
+      webViewRef.current.goBack();
+      return true;
+    }
+    return false;
+  };
 
   const onNavigationStateChange = (navState) => {
     const { url } = navState;
@@ -20,13 +39,56 @@ const HomeScreen = () => {
       !url.includes("/register") &&
       !url.includes("/terms");
     setShowNavBar(shouldShowNavBar);
+
+    // Extract the tab from the URL and update the selected tab
+    const tab = url.split("/").pop();
+    setSelectedTab(tab);
   };
 
-  const goToUrl = (url) => {
+  const goToUrl = (url, tab) => {
     if (webViewRef.current) {
-      webViewRef.current.injectJavaScript(`window.location.href = '${url}';`);
+      webViewRef.current.injectJavaScript(`window.location.href = '${url}/${tab}';`);
     }
+    setSelectedTab(tab);
   };
+
+  const renderIcon = (tab, iconName, iconSize) => {
+    if (tab === 'home') {
+      return (
+        <TouchableOpacity
+          key={tab}
+          onPress={() => goToUrl('https://fincoin.swastikcredit.in',"/")}
+          style={styles.navItem}
+        >
+          <Ionicons
+            name={selectedTab === tab ? `${iconName}` : `${iconName}-outline`}
+            size={iconSize}
+            style={[styles.whiteIcon, { textAlign: 'center' }]}
+          />
+          <Text style={[styles.navText, { color: selectedTab === tab ? 'yellow' : 'white' }]}>
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </Text>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          key={tab}
+          onPress={() => goToUrl(`https://fincoin.swastikcredit.in`, tab)}
+          style={styles.navItem}
+        >
+          <Ionicons
+            name={selectedTab === tab ? `${iconName}` : `${iconName}-outline`}
+            size={iconSize}
+            style={[styles.whiteIcon, { textAlign: 'center' }]}
+          />
+          <Text style={[styles.navText, { color: selectedTab === tab ? 'yellow' : 'white' }]}>
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+  };  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -40,39 +102,10 @@ const HomeScreen = () => {
         />
         {showNavBar && (
           <View style={styles.bottomNavContainer}>
-            <TouchableOpacity
-              onPress={() => goToUrl("https://fincoin.swastikcredit.in/")}
-            >
-              <Ionicons  name="home-outline" size={25} style={[styles.whiteIcon, { textAlign: 'center' }]} />
-              <Text style={styles.navText}>Home</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() =>
-                goToUrl("https://fincoin.swastikcredit.in/payment")
-              }
-            >
-              <Ionicons  name="card-outline" size={24} style={[styles.whiteIcon, { textAlign: 'center' }]} />
-              <Text style={styles.navText}>Payment</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() =>
-                goToUrl("https://fincoin.swastikcredit.in/account")
-              }
-            >
-              <Ionicons  name="wallet-outline" size={24} style={[styles.whiteIcon, { textAlign: 'center' }]} />
-              <Text style={styles.navText}>Account</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() =>
-                goToUrl("https://fincoin.swastikcredit.in/profile")
-              }
-            >
-              <Ionicons  name="person-outline" size={24} style={[styles.whiteIcon, { textAlign: 'center' }]} />
-              <Text style={styles.navText}>Profile</Text>
-            </TouchableOpacity>
+            {renderIcon('home', 'home', 25)}
+            {renderIcon('payment', 'card', 24)}
+            {renderIcon('account', 'wallet', 24)}
+            {renderIcon('profile', 'person', 24)}
           </View>
         )}
       </View>
