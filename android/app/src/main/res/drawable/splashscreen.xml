@@ -1,4 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:drawable="@color/splashscreen_background"/>
+
+    <!-- Background with white color -->
+    <item android:drawable="@android:color/white" />
+
+    <!-- Your JPEG image with gravity set to center -->
+    <item
+        android:drawable="@drawable/splashscreen_image"
+        android:gravity="center"
+    />
+
 </layer-list>

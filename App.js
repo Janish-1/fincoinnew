@@ -18,7 +18,7 @@ const HomeScreen = () => {
     const shouldShowNavBar =
       !url.includes("/login") &&
       !url.includes("/register") &&
-      !url.includes("/term");
+      !url.includes("/terms");
     setShowNavBar(shouldShowNavBar);
   };
 
