@@ -103,7 +103,7 @@ const HomeScreen = () => {
         {showNavBar && (
           <View style={styles.bottomNavContainer}>
             {renderIcon('home', 'home', 25)}
-            {renderIcon('payment', 'card', 24)}
+            {renderIcon('investment', 'card', 24)}
             {renderIcon('account', 'wallet', 24)}
             {renderIcon('profile', 'person', 24)}
           </View>
