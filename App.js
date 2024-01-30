@@ -6,6 +6,8 @@ import {
   Text,
   TouchableOpacity,
   BackHandler,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import WebView from "react-native-webview";
 import { Ionicons } from '@expo/vector-icons';
@@ -35,6 +37,7 @@ const HomeScreen = () => {
   const onNavigationStateChange = (navState) => {
     const { url } = navState;
     const shouldShowNavBar =
+      !url.includes("/loading") &&
       !url.includes("/login") &&
       !url.includes("/register") &&
       !url.includes("/terms");
@@ -45,70 +48,64 @@ const HomeScreen = () => {
     setSelectedTab(tab);
   };
 
-  const goToUrl = (url, tab) => {
+  const goToUrl = (tab) => {
+    let url;
+    if (tab === 'home') {
+      url = 'https://fincoin.swastikcredit.in';
+    } else if (tab === 'Payment') {
+      url = 'https://fincoin.swastikcredit.in/investment';
+    } else {
+      url = `https://fincoin.swastikcredit.in/${tab}`;
+    }
+  
     if (webViewRef.current) {
-      webViewRef.current.injectJavaScript(`window.location.href = '${url}/${tab}';`);
+      webViewRef.current.injectJavaScript(`window.location.href = '${url}';`);
     }
     setSelectedTab(tab);
   };
-
-  const renderIcon = (tab, iconName, iconSize) => {
-    if (tab === 'home') {
-      return (
-        <TouchableOpacity
-          key={tab}
-          onPress={() => goToUrl('https://fincoin.swastikcredit.in',"/")}
-          style={styles.navItem}
-        >
-          <Ionicons
-            name={selectedTab === tab ? `${iconName}` : `${iconName}-outline`}
-            size={iconSize}
-            style={[styles.whiteIcon, { textAlign: 'center' }]}
-          />
-          <Text style={[styles.navText, { color: selectedTab === tab ? 'yellow' : 'white' }]}>
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </Text>
-        </TouchableOpacity>
-      );
-    } else {
-      return (
-        <TouchableOpacity
-          key={tab}
-          onPress={() => goToUrl(`https://fincoin.swastikcredit.in`, tab)}
-          style={styles.navItem}
-        >
-          <Ionicons
-            name={selectedTab === tab ? `${iconName}` : `${iconName}-outline`}
-            size={iconSize}
-            style={[styles.whiteIcon, { textAlign: 'center' }]}
-          />
-          <Text style={[styles.navText, { color: selectedTab === tab ? 'yellow' : 'white' }]}>
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </Text>
-        </TouchableOpacity>
-      );
-    }
-  };  
-
+  
+  const renderIcon = (tab, iconName, iconSize) => (
+    <TouchableOpacity
+      key={tab}
+      onPress={() => goToUrl(tab)}
+      style={styles.navItem}
+    >
+      <Ionicons
+        name={selectedTab === tab ? `${iconName}` : `${iconName}-outline`}
+        size={iconSize}
+        style={[styles.whiteIcon, { textAlign: 'center' }]}
+      />
+      <Text style={[styles.navText, { color: selectedTab === tab ? 'yellow' : 'white' }]}>
+        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+      </Text>
+    </TouchableOpacity>
+  );
+  
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        <WebView
-          ref={webViewRef}
-          source={{ uri: "https://fincoin.swastikcredit.in/" }}
-          style={styles.webview}
-          onNavigationStateChange={onNavigationStateChange}
-          onError={(error) => console.error("WebView error:", error)}
-        />
-        {showNavBar && (
-          <View style={styles.bottomNavContainer}>
-            {renderIcon('home', 'home', 25)}
-            {renderIcon('investment', 'card', 24)}
-            {renderIcon('account', 'wallet', 24)}
-            {renderIcon('profile', 'person', 24)}
-          </View>
-        )}
-      </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      >
+        <View style={styles.container}>
+          <WebView
+            ref={webViewRef}
+            source={{ uri: "https://fincoin.swastikcredit.in/" }}
+            style={styles.webview}
+            onNavigationStateChange={onNavigationStateChange}
+            onError={(error) => console.error("WebView error:", error)}
+          />
+        </View>
+      </KeyboardAvoidingView>
+      {showNavBar && (
+        <View style={styles.bottomNavContainer}>
+          {renderIcon('home', 'home', 25)}
+          {renderIcon('Payment', 'card', 24)}
+          {renderIcon('account', 'wallet', 24)}
+          {renderIcon('profile', 'person', 24)}
+        </View>
+      )}
     </SafeAreaView>
   );
 };
