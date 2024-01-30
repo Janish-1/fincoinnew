@@ -1,25 +1,17 @@
-import React, { useRef, useState, useEffect } from "react";
-import {
-  View,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  BackHandler,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import WebView from "react-native-webview";
+// HomeScreen.js
+import React, { useRef, useState, useEffect } from 'react';
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, BackHandler, KeyboardAvoidingView, Platform } from 'react-native';
+import WebView from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
   const webViewRef = useRef(null);
-  const [showNavBar, setShowNavBar] = useState(true);
   const [selectedTab, setSelectedTab] = useState('home');
+  const [showNavBar, setShowNavBar] = useState(false); // Initialize to false
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
+      'hardwareBackPress',
       handleBackPress
     );
 
@@ -36,16 +28,12 @@ const HomeScreen = () => {
 
   const onNavigationStateChange = (navState) => {
     const { url } = navState;
-    const shouldShowNavBar =
-      !url.includes("/loading") &&
-      !url.includes("/login") &&
-      !url.includes("/register") &&
-      !url.includes("/terms");
-    setShowNavBar(shouldShowNavBar);
+    const tab = url.split('/').pop();
+    
+    // Conditionally show navbar based on the current page
+    setShowNavBar(!url.includes('/login') && !url.includes('/register') && !url.includes('/terms'));
 
-    // Extract the tab from the URL and update the selected tab
-    const tab = url.split("/").pop();
-    setSelectedTab(tab);
+    setSelectedTab(tab || 'home');
   };
 
   const goToUrl = (tab) => {
@@ -57,13 +45,13 @@ const HomeScreen = () => {
     } else {
       url = `https://fincoin.swastikcredit.in/${tab}`;
     }
-  
+
     if (webViewRef.current) {
       webViewRef.current.injectJavaScript(`window.location.href = '${url}';`);
     }
     setSelectedTab(tab);
   };
-  
+
   const renderIcon = (tab, iconName, iconSize) => (
     <TouchableOpacity
       key={tab}
@@ -80,21 +68,21 @@ const HomeScreen = () => {
       </Text>
     </TouchableOpacity>
   );
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <View style={styles.container}>
           <WebView
             ref={webViewRef}
-            source={{ uri: "https://fincoin.swastikcredit.in/" }}
+            source={{ uri: 'https://fincoin.swastikcredit.in/' }}
             style={styles.webview}
             onNavigationStateChange={onNavigationStateChange}
-            onError={(error) => console.error("WebView error:", error)}
+            onError={(error) => console.error('WebView error:', error)}
           />
         </View>
       </KeyboardAvoidingView>
@@ -113,7 +101,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   webview: {
     flex: 1,
@@ -126,18 +114,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   navItem: {
-    alignItems: "center",
+    alignItems: 'center',
   },
-  
+
   navText: {
-    color: 'white',  // Set text color to white
+    color: 'white', // Set text color to white
     marginTop: 3,
   },
-  
+
   // Assuming you have a style for white icons
   whiteIcon: {
-    color: 'white',  // Set icon color to white
+    color: 'white', // Set icon color to white
   },
-  });
+});
 
 export default HomeScreen;
