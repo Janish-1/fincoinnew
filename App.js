@@ -1,21 +1,33 @@
 // HomeScreen.js
-import React, { useRef, useState, useEffect } from 'react';
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, BackHandler, KeyboardAvoidingView, Platform } from 'react-native';
-import WebView from 'react-native-webview';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useRef, useState, useEffect } from "react";
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  BackHandler,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import WebView from "react-native-webview";
+import { Ionicons } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   const webViewRef = useRef(null);
-  const [selectedTab, setSelectedTab] = useState('home');
+  const [selectedTab, setSelectedTab] = useState("home");
   const [showNavBar, setShowNavBar] = useState(false); // Initialize to false
+  const [loginActivated, setLoginActivated] = useState(false);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
+      "hardwareBackPress",
       handleBackPress
     );
 
-    return () => backHandler.remove();
+    return () => {
+      backHandler.remove();
+    };
   }, []);
 
   const handleBackPress = () => {
@@ -28,20 +40,30 @@ const HomeScreen = () => {
 
   const onNavigationStateChange = (navState) => {
     const { url } = navState;
-    const tab = url.split('/').pop();
-    
-    // Conditionally show navbar based on the current page
-    setShowNavBar(!url.includes('/login') && !url.includes('/register') && !url.includes('/terms'));
+    const tab = url.split("/").pop();
 
-    setSelectedTab(tab || 'home');
+    // Show navbar only after /login is activated and not on /login page
+    setShowNavBar(
+      loginActivated &&
+        !url.includes("/login") &&
+        !url.includes("/register") &&
+        !url.includes("/terms")
+    );
+
+    setSelectedTab(tab || "home");
+
+    // Activate login when user is on the /login page
+    if (url.includes("/login")) {
+      setLoginActivated(true);
+    }
   };
 
   const goToUrl = (tab) => {
     let url;
-    if (tab === 'home') {
-      url = 'https://fincoin.swastikcredit.in';
-    } else if (tab === 'Payment') {
-      url = 'https://fincoin.swastikcredit.in/investment';
+    if (tab === "home") {
+      url = "https://fincoin.swastikcredit.in";
+    } else if (tab === "Payment") {
+      url = "https://fincoin.swastikcredit.in/investment";
     } else {
       url = `https://fincoin.swastikcredit.in/${tab}`;
     }
@@ -61,9 +83,14 @@ const HomeScreen = () => {
       <Ionicons
         name={selectedTab === tab ? `${iconName}` : `${iconName}-outline`}
         size={iconSize}
-        style={[styles.whiteIcon, { textAlign: 'center' }]}
+        style={[styles.whiteIcon, { textAlign: "center" }]}
       />
-      <Text style={[styles.navText, { color: selectedTab === tab ? 'yellow' : 'white' }]}>
+      <Text
+        style={[
+          styles.navText,
+          { color: selectedTab === tab ? "yellow" : "white" },
+        ]}
+      >
         {tab.charAt(0).toUpperCase() + tab.slice(1)}
       </Text>
     </TouchableOpacity>
@@ -73,25 +100,25 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
         <View style={styles.container}>
           <WebView
             ref={webViewRef}
-            source={{ uri: 'https://fincoin.swastikcredit.in/' }}
+            source={{ uri: "https://fincoin.swastikcredit.in/" }}
             style={styles.webview}
             onNavigationStateChange={onNavigationStateChange}
-            onError={(error) => console.error('WebView error:', error)}
+            onError={(error) => console.error("WebView error:", error)}
           />
         </View>
       </KeyboardAvoidingView>
       {showNavBar && (
         <View style={styles.bottomNavContainer}>
-          {renderIcon('home', 'home', 25)}
-          {renderIcon('Payment', 'card', 24)}
-          {renderIcon('account', 'wallet', 24)}
-          {renderIcon('profile', 'person', 24)}
+          {renderIcon("home", "home", 25)}
+          {renderIcon("Payment", "card", 24)}
+          {renderIcon("account", "wallet", 24)}
+          {renderIcon("profile", "person", 24)}
         </View>
       )}
     </SafeAreaView>
@@ -101,30 +128,31 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   webview: {
     flex: 1,
   },
   bottomNavContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'black',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "black",
     paddingVertical: 10,
+    position: "fixed",
   },
   navItem: {
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   navText: {
-    color: 'white', // Set text color to white
+    color: "white", // Set text color to white
     marginTop: 3,
   },
 
   // Assuming you have a style for white icons
   whiteIcon: {
-    color: 'white', // Set icon color to white
+    color: "white", // Set icon color to white
   },
 });
 
