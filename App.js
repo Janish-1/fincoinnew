@@ -7,8 +7,9 @@ import {
   Text,
   TouchableOpacity,
   BackHandler,
-  KeyboardAvoidingView,
   Platform,
+  KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import WebView from "react-native-webview";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,8 +17,8 @@ import { Ionicons } from "@expo/vector-icons";
 const HomeScreen = () => {
   const webViewRef = useRef(null);
   const [selectedTab, setSelectedTab] = useState("home");
-  const [showNavBar, setShowNavBar] = useState(false); // Initialize to false
-  const [loginActivated, setLoginActivated] = useState(false);
+  const [showNavBar, setShowNavBar] = useState(false);
+  const [loginActivated, setLoginActivated] = useState(true);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -25,8 +26,17 @@ const HomeScreen = () => {
       handleBackPress
     );
 
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        // Show the bottom navigation bar when the keyboard hides
+        setShowNavBar(true);
+      }
+    );
+
     return () => {
       backHandler.remove();
+      keyboardDidHideListener.remove();
     };
   }, []);
 
@@ -42,7 +52,6 @@ const HomeScreen = () => {
     const { url } = navState;
     const tab = url.split("/").pop();
 
-    // Show navbar only after /login is activated and not on /login page
     setShowNavBar(
       loginActivated &&
         !url.includes("/login") &&
@@ -52,7 +61,6 @@ const HomeScreen = () => {
 
     setSelectedTab(tab || "home");
 
-    // Activate login when user is on the /login page
     if (url.includes("/login")) {
       setLoginActivated(true);
     }
@@ -99,9 +107,9 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : "position"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -10} // Adjust the offset as needed
       >
         <View style={styles.container}>
           <WebView
@@ -133,6 +141,9 @@ const styles = StyleSheet.create({
   webview: {
     flex: 1,
   },
+  flex: {
+    flex: 1,
+  },
   bottomNavContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -140,19 +151,18 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     paddingVertical: 10,
     position: "fixed",
+    bottom: 0,
+    width: "100%",
   },
   navItem: {
     alignItems: "center",
   },
-
   navText: {
-    color: "white", // Set text color to white
+    color: "white",
     marginTop: 3,
   },
-
-  // Assuming you have a style for white icons
   whiteIcon: {
-    color: "white", // Set icon color to white
+    color: "white",
   },
 });
 
