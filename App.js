@@ -25,6 +25,11 @@ const HomeScreen = () => {
     }
   };
 
+  const handleNavigationStateChange = (navState) => {
+    console.log("Current URL:", navState.url);
+    console.log("Can go back:", navState.canGoBack);
+  };
+
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButton);
 
@@ -41,6 +46,7 @@ const HomeScreen = () => {
           source={{ uri: "https://fincoin.swastikcredit.in/" }}
           style={styles.webview}
           onError={(error) => console.error("WebView error:", error)}
+          onNavigationStateChange={handleNavigationStateChange}
         />
       </View>
     </SafeAreaView>
